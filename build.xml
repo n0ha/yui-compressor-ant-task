@@ -6,13 +6,14 @@
 
   <path id="compile.classpath">
     <pathelement location="${ant.jar}" />
-    <pathelement location="${yui-compressor.jar}" />
+    <pathelement location="${yuicompressor.jar}" />
   </path>
 
   <property name="build.javadoc.dir" location="${build.dir}/javadocs" />
   <property name="build.classes.dir" location="${build.dir}/classes" />
 
   <target name="init" description="Initializes directory layout">
+	<mkdir dir="${build.dir}" />
     <mkdir dir="${build.javadoc.dir}" />
     <mkdir dir="${build.classes.dir}" />
     <mkdir dir="${dist.dir}" />
@@ -55,6 +56,8 @@
   </target>
 
   <target name="clean" depends="init" description="Removes all build artefacts">
+	<delete dir="${build.javadocs.dir}" />
+	<delete dir="${build.classes.dir}" />
     <delete dir="${build.dir}" />
     <delete dir="${dist.dir}" />
   </target>
