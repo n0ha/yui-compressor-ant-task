@@ -59,12 +59,16 @@ public class CompressionStatistics {
   }
 
   public String getTotalStats() {
+    if (fileCount == 0) {
+      return "No files to compress, or all files already up to date";
+    }
+
     int percentage = (int) Math.floor((double) toBytes / (double) fromBytes * 100);
-    fromBytes = (long) Math.floor((double) fromBytes / (double) 1024);
-    toBytes = (long) Math.floor((double) toBytes / (double) 1024);
-    long saved = fromBytes - toBytes;
-    return "Compressed " + fileCount + " files to " + percentage + "% (" + fromBytes + "KB to " + toBytes + "KB, saving "
-        + saved + "KB)";
+    long fromKBytes = (long) Math.floor((double) fromBytes / (double) 1024);
+    long toKBytes = (long) Math.floor((double) toBytes / (double) 1024);
+    long saved = fromKBytes - toKBytes;
+    return "Compressed " + fileCount + " files to " + percentage + "% (" + fromKBytes + "KB to " + toKBytes
+        + "KB, saving " + saved + "KB)";
   }
 
 }
