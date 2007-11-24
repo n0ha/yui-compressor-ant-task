@@ -5,7 +5,7 @@
  * The YUI Compressor was written and is maintained by:
  *     	Julien Lecomte <jlecomte@yahoo-inc.com>
  * The Ant task was written by:
- * 		Viktor Lieskovsky <viktor.lieskovsky@gmail.com>
+ * 	    Viktor Lieskovsky <viktor.lieskovsky@gmail.com>
  *
  * All rights reserved.
  *
