@@ -54,6 +54,7 @@ import org.apache.tools.ant.taskdefs.MatchingTask;
 import org.mozilla.javascript.ErrorReporter;
 import org.mozilla.javascript.EvaluatorException;
 
+import com.yahoo.platform.yui.compressor.CssCompressor;
 import com.yahoo.platform.yui.compressor.JavaScriptCompressor;
 
 /**
@@ -70,7 +71,10 @@ public class YuiCompressorTask extends MatchingTask {
   protected boolean munge = false;
   protected boolean warn = true;
   protected boolean preserveAllSemiColons = true;
-  protected String suffix = "-min.js";
+
+  // suffixes
+  protected String jsSuffix = "-min.js";
+  protected String cssSuffix = "-min.css";
 
   // stats
   private CompressionStatistics stats = new CompressionStatistics();
@@ -83,14 +87,22 @@ public class YuiCompressorTask extends MatchingTask {
 
     for (int i = 0; i < files.length; i++) {
       File inFile = new File(fromDir.getAbsolutePath(), files[i]);
-      File outFile = new File(toDir.getAbsolutePath(), files[i].replaceFirst("\\.js$", suffix));
-      compressFile(inFile, outFile);
+      FileType fileType = FileType.getFileType(files[i]);
+      if (fileType == null) {
+      	continue;
+      }
+
+      String newSuffix = (fileType.equals(FileType.JS_FILE)) ? jsSuffix : cssSuffix;
+      File outFile = new File(toDir.getAbsolutePath(), files[i].replaceFirst(fileType.getSuffix() + "$", newSuffix));
+      compressFile(inFile, outFile, fileType);
     }
 
+    log(stats.getJsStats());
+    log(stats.getCssStats());
     log(stats.getTotalStats());
   }
 
-  private void compressFile(File inFile, File outFile) throws EvaluatorException, BuildException {
+  private void compressFile(File inFile, File outFile, FileType fileType) throws EvaluatorException, BuildException {
     // do not recompress when outFile is newer
     // always recompress when outFile and inFile are exactly the same file
     if (outFile.isFile() && !inFile.getAbsolutePath().equals(outFile.getAbsolutePath())) {
@@ -100,8 +112,36 @@ public class YuiCompressorTask extends MatchingTask {
     }
 
     try {
-      Reader in = openFile(inFile);
-      JavaScriptCompressor compressor = new JavaScriptCompressor(in, new ErrorReporter() {
+
+    	// prepare input file
+    	Reader in = openFile(inFile);
+
+      // prepare output file
+      outFile.getParentFile().mkdirs();
+      Writer out = new OutputStreamWriter(new FileOutputStream(outFile), charset);
+
+      if (fileType.equals(FileType.JS_FILE)) {
+      	JavaScriptCompressor compressor = createJavaScriptCompressor(in);
+      	compressor.compress(out, lineBreakPosition, munge, warn, preserveAllSemiColons);
+      } else if (fileType.equals(FileType.CSS_FILE)) {
+      	CssCompressor compressor = new CssCompressor(in);
+      	compressor.compress(out, lineBreakPosition);
+      }
+
+      // close all streams
+      in.close();
+      in = null;
+      out.close();
+      out = null;
+
+      log(stats.getFileStats(inFile, outFile, fileType));
+    } catch (IOException ioe) {
+      throw new BuildException("I/O Error when compressing file", ioe);
+    }
+  }
+
+  private JavaScriptCompressor createJavaScriptCompressor(Reader in) throws IOException {
+  	JavaScriptCompressor compressor = new JavaScriptCompressor(in, new ErrorReporter() {
 
         private String getMessage(String source, String message, int line, int lineOffset) {
           String logMessage;
@@ -128,23 +168,7 @@ public class YuiCompressorTask extends MatchingTask {
           return new EvaluatorException(message);
         }
       });
-
-      in.close();
-      in = null;
-
-      // create dirs
-      outFile.getParentFile().mkdirs();
-
-      // compress & write contents to file
-      Writer out = new OutputStreamWriter(new FileOutputStream(outFile), charset);
-      compressor.compress(out, lineBreakPosition, munge, warn, preserveAllSemiColons);
-
-      out.close();
-
-      log(stats.getFileStats(inFile, outFile));
-    } catch (IOException ioe) {
-      throw new BuildException("I/O Error when compressing file", ioe);
-    }
+  	return compressor;
   }
 
   private Reader openFile(File file) throws BuildException {
@@ -194,7 +218,11 @@ public class YuiCompressorTask extends MatchingTask {
     this.preserveAllSemiColons = preserveAllSemiColons;
   }
 
-  public void setSuffix(String suffix) {
-    this.suffix = suffix;
+  public void setJsSuffix(String jsSuffix) {
+    this.jsSuffix = jsSuffix;
   }
+
+	public void setCssSuffix(String cssSuffix) {
+		this.cssSuffix = cssSuffix;
+	}
 }
