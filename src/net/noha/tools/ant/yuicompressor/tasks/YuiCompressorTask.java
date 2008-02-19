@@ -66,11 +66,12 @@ public class YuiCompressorTask extends MatchingTask {
   protected File toDir;
 
   // properties with default values
-  protected String charset = "WINDOWS-1250";
+  protected String charset = "ISO-8859-1";
   protected int lineBreakPosition = -1;
   protected boolean munge = false;
   protected boolean warn = true;
   protected boolean preserveAllSemiColons = true;
+  protected boolean optimize = true;
 
   // suffixes
   protected String jsSuffix = "-min.js";
@@ -122,7 +123,7 @@ public class YuiCompressorTask extends MatchingTask {
 
       if (fileType.equals(FileType.JS_FILE)) {
       	JavaScriptCompressor compressor = createJavaScriptCompressor(in);
-      	compressor.compress(out, lineBreakPosition, munge, warn, preserveAllSemiColons);
+      	compressor.compress(out, lineBreakPosition, munge, warn, preserveAllSemiColons, !optimize);
       } else if (fileType.equals(FileType.CSS_FILE)) {
       	CssCompressor compressor = new CssCompressor(in);
       	compressor.compress(out, lineBreakPosition);
@@ -216,6 +217,10 @@ public class YuiCompressorTask extends MatchingTask {
 
   public void setPreserveAllSemiColons(boolean preserveAllSemiColons) {
     this.preserveAllSemiColons = preserveAllSemiColons;
+  }
+
+  public void setOptimize(boolean optimize) {
+  	this.optimize = optimize;
   }
 
   public void setJsSuffix(String jsSuffix) {

@@ -1,64 +1,73 @@
 <?xml version="1.0"?>
 <project name="yui-compressor-ant-task" default="dist">
-  <description>Compiles and packages yui-compressor-ant-task project.</description>
+	<description>Compiles and packages yui-compressor-ant-task project.</description>
 
-  <property file="build.properties" />
+	<property file="build.properties" />
 
-  <path id="compile.classpath">
-    <pathelement location="${ant.jar}" />
-    <pathelement location="${yuicompressor.jar}" />
-  </path>
+	<path id="compile.classpath">
+		<pathelement location="${ant.jar}" />
+		<pathelement location="${yuicompressor.jar}" />
+	</path>
 
-  <property name="build.javadoc.dir" location="${build.dir}/javadocs" />
-  <property name="build.classes.dir" location="${build.dir}/classes" />
+	<target name="init" description="Initializes directory layout">
+		<mkdir dir="${build.dir}" />
+		<mkdir dir="${build.javadoc.dir}" />
+		<mkdir dir="${build.classes.dir}" />
+		<mkdir dir="${build.output.dir}" />
+		<mkdir dir="${dist.dir}" />
+	</target>
 
-  <target name="init" description="Initializes directory layout">
-	<mkdir dir="${build.dir}" />
-    <mkdir dir="${build.javadoc.dir}" />
-    <mkdir dir="${build.classes.dir}" />
-    <mkdir dir="${dist.dir}" />
-  </target>
+	<target name="compile" depends="init" description="Compiles the sources">
+		<property name="build.debug" value="true" />
+		<property name="build.debuglevel" value="lines,vars,source" />
+		<javac srcdir="${src.dir}" destdir="${build.classes.dir}" target="${build.java.version}" source="${build.java.version}" deprecation="${build.deprecation}" includeAntRuntime="no" debuglevel="${build.debuglevel}" debug="${build.debug}">
+			<classpath refid="compile.classpath" />
+		</javac>
+	</target>
 
-  <target name="compile" depends="init" description="Compiles the sources">
-    <property name="build.debug" value="true" />
-    <property name="build.debuglevel" value="lines,vars,source" />
-    <javac srcdir="${src.dir}"
-           destdir="${build.classes.dir}"
-           target="${build.java.version}"
-           source="${build.java.version}"
-           deprecation="${build.deprecation}"
-           includeAntRuntime="no"
-           debuglevel="${build.debuglevel}"
-           debug="${build.debug}">
-      <classpath refid="compile.classpath" />
-    </javac>
-  </target>
+	<target name="javadocs" depends="compile" description="Make the Javadocs">
+		<mkdir dir="${build.javadoc.dir}" />
+		<javadoc author="true" destdir="${build.javadoc.dir}" packagenames="net.noha.tools.ant.*" sourcepath="${src.dir}" use="true" version="true" windowtitle="yui-compressor-ant-task" private="true">
+			<classpath refid="compile.classpath" />
+		</javadoc>
+	</target>
 
-  <target name="javadocs" depends="compile" description="Make the Javadocs">
-    <mkdir dir="${build.javadoc.dir}" />
-    <javadoc author="true"
-             destdir="${build.javadoc.dir}"
-             packagenames="net.noha.tools.ant.*"
-             sourcepath="${src.dir}"
-             use="true"
-             version="true"
-             windowtitle="yui-compressor-ant-task"
-             private="true">
-      <classpath refid="compile.classpath" />
-    </javadoc>
-  </target>
+	<target name="jar" depends="compile" description="Packages classes to a JAR file">
+		<jar destfile="${yui-compressor-ant-task.jar}" basedir="${build.classes.dir}" compress="true" index="true" />
+	</target>
 
-  <target name="dist" depends="compile,javadocs" description="Packages classes to a JAR file">
-    <jar destfile="${yui-compressor-ant-task.jar}"
-         basedir="${build.classes.dir}"
-         compress="true"
-         index="true" />
-  </target>
+	<target name="prepare-dist" depends="jar,javadocs">
+		<copy todir="${build.dir}/doc">
+			<fileset dir="${doc.dir}" />
+		</copy>
+		<copy todir="${build.dir}/src">
+			<fileset dir="${src.dir}" />
+		</copy>
+		<copy todir="${build.dir}/lib">
+			<fileset dir="${lib.dir}" />
+			<fileset dir="${vendor.lib.dir}" />
+			<fileset dir="${vendor.build.dir}" />
+		</copy>
+	</target>
 
-  <target name="clean" depends="init" description="Removes all build artefacts">
-	<delete dir="${build.javadocs.dir}" />
-	<delete dir="${build.classes.dir}" />
-    <delete dir="${build.dir}" />
-    <delete dir="${dist.dir}" />
-  </target>
+	<target name="dist" depends="prepare-dist" description="Creates distribution archive">
+		<zip destfile="${yui-compressor-ant-task.zip}" basedir="${build.dir}" level="9">
+			<exclude name="classes/**" />
+			<exclude name="src/**" />
+		</zip>
+	</target>
+
+	<target name="dist-src" depends="prepare-dist" description="Creates distribution archive with source">
+		<zip destfile="${yui-compressor-ant-task-src.zip}" basedir="${build.dir}" level="9">
+			<exclude name="classes/**" />
+		</zip>
+	</target>
+
+	<target name="clean" depends="init" description="Removes all build artefacts">
+		<delete dir="${build.javadocs.dir}" />
+		<delete dir="${build.classes.dir}" />
+		<delete dir="${build.output.dir}" />
+		<delete dir="${build.dir}" />
+		<delete dir="${dist.dir}" />
+	</target>
 </project>
