@@ -9,10 +9,6 @@
 		<pathelement location="${yuicompressor-ant-task.jar}" />
 	</path>
 	
-	<taskdef name="yui-compressor" classname="net.noha.tools.ant.yuicompressor.tasks.YuiCompressorTask">
-		<classpath refid="task.classpath" />
-	</taskdef>
-
 	<target name="banner">
 		<echo message="***************************************" />
 		<echo message="********** Building Example ***********" />
@@ -23,7 +19,34 @@
 		<echo message="***************************************" />
 	</target>
 
-	<target name="init" description="Initializes directory layout and shows banner">
+  <target name="check-task-jar-is-present" description="Checks if the required ant task jar exists in the expected dir">
+    <available file="${yuicompressor-ant-task.jar}" property="task.jar.present" />
+  </target>
+
+  <target name="define-ant-task" if="task.jar.present">
+    <taskdef name="yui-compressor" classname="net.noha.tools.ant.yuicompressor.tasks.YuiCompressorTask">
+      <classpath refid="task.classpath" />
+	  </taskdef>
+  </target>
+
+  <target name="fail-build" unless="task.jar.present">
+    <fail>Cannot find the required ant task jar file.
+    
+    Explanation:
+    =======================================================================================================
+    Cannot find yui-compressor-ant-task-${build.version}.jar file in ${parent.dist.dir}.
+    This is probably because you did not ran the ant task build. You can run the build with these commands:
+    
+    # cd ../../
+    # ant
+    
+    Alternatively, you can download a prebuilt jar from http://code.google.com/p/javaflight-code/ and put it
+    in the ${parent.dist.dir} directory.
+    =======================================================================================================
+    </fail>
+  </target>
+
+	<target name="init" depends="check-task-jar-is-present,define-ant-task,fail-build" description="Initializes directory layout and shows banner">
 		<mkdir dir="${dist.dir}" />
 		<mkdir dir="${build.dir}" />
 	</target>
