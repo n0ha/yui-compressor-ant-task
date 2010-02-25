@@ -47,7 +47,6 @@ import java.io.Writer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.UnsupportedCharsetException;
 
-
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.Project;
@@ -63,191 +62,190 @@ import com.yahoo.platform.yui.compressor.JavaScriptCompressor;
  */
 public class YuiCompressorTask extends MatchingTask {
 
-  protected File fromDir;
-  protected File toDir;
+	protected File fromDir;
+	protected File toDir;
 
-  // properties with default values
-  protected String charset = "ISO-8859-1";
-  protected int lineBreakPosition = -1;
-  protected boolean munge = false;
-  protected boolean warn = true;
-  private boolean enabled = true;
-  protected boolean preserveAllSemiColons = true;
-  protected boolean optimize = true;
+	// properties with default values
+	protected String charset = "ISO-8859-1";
+	protected int lineBreakPosition = -1;
+	protected boolean munge = false;
+	protected boolean warn = true;
+	private boolean enabled = true;
+	protected boolean preserveAllSemiColons = true;
+	protected boolean optimize = true;
 
-  // suffixes
-  protected String jsSuffix = "-min.js";
-  protected String cssSuffix = "-min.css";
+	// suffixes
+	protected String jsSuffix = "-min.js";
+	protected String cssSuffix = "-min.css";
 
-  // stats
-  private CompressionStatistics stats = new CompressionStatistics();
+	// stats
+	private CompressionStatistics stats = new CompressionStatistics();
 
-  public void execute() {
-    validateDirs();
+	public void execute() {
+		validateDirs();
 
-    DirectoryScanner ds = getDirectoryScanner(fromDir);
-    String[] files = ds.getIncludedFiles();
+		DirectoryScanner ds = getDirectoryScanner(fromDir);
+		String[] files = ds.getIncludedFiles();
 
-    for (int i = 0; i < files.length; i++) {
-      File inFile = new File(fromDir.getAbsolutePath(), files[i]);
-      FileType fileType = FileType.getFileType(files[i]);
-      if (fileType == null) {
-      	continue;
-      }
+		for (int i = 0; i < files.length; i++) {
+			File inFile = new File(fromDir.getAbsolutePath(), files[i]);
+			FileType fileType = FileType.getFileType(files[i]);
+			if (fileType == null) {
+				continue;
+			}
 
-      String newSuffix = (fileType.equals(FileType.JS_FILE)) ? jsSuffix : cssSuffix;
-      File outFile = new File(toDir.getAbsolutePath(), files[i].replaceFirst(fileType.getSuffix() + "$", newSuffix));
-      if(isEnabled())
-    	  compressFile(inFile, outFile, fileType);
-      else
-      {
-    	  try {
-			copyFile(inFile, outFile);
-		} catch (IOException e) {
-			e.printStackTrace();
+			String newSuffix = (fileType.equals(FileType.JS_FILE)) ? jsSuffix : cssSuffix;
+			File outFile = new File(toDir.getAbsolutePath(), files[i].replaceFirst(fileType.getSuffix() + "$", newSuffix));
+			if (isEnabled())
+				compressFile(inFile, outFile, fileType);
+			else {
+				try {
+					copyFile(inFile, outFile);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
-      }
-    }
 
-    log(stats.getJsStats());
-    log(stats.getCssStats());
-    log(stats.getTotalStats());
-  }
+		log(stats.getJsStats());
+		log(stats.getCssStats());
+		log(stats.getTotalStats());
+	}
 
-  public static void copyFile(File srcFile, File targetFile) throws IOException {
-      targetFile.getParentFile().mkdirs();
-      targetFile.createNewFile(); //if necessary, creates the target file
-      
-      FileChannel srcChannel = new FileInputStream(srcFile).getChannel();
-      FileChannel dstChannel = new FileOutputStream(targetFile).getChannel();
-      dstChannel.transferFrom(srcChannel, 0, srcChannel.size());
-      
-      srcChannel.close();
-      dstChannel.close();
-  }
-  private void compressFile(File inFile, File outFile, FileType fileType) throws EvaluatorException, BuildException {
-    // do not recompress when outFile is newer
-    // always recompress when outFile and inFile are exactly the same file
-    if (outFile.isFile() && !inFile.getAbsolutePath().equals(outFile.getAbsolutePath())) {
-      if (outFile.lastModified() >= inFile.lastModified()) {
-        return;
-      }
-    }
+	public static void copyFile(File srcFile, File targetFile) throws IOException {
+		targetFile.getParentFile().mkdirs();
+		targetFile.createNewFile(); // if necessary, creates the target file
 
-    try {
+		FileChannel srcChannel = new FileInputStream(srcFile).getChannel();
+		FileChannel dstChannel = new FileOutputStream(targetFile).getChannel();
+		dstChannel.transferFrom(srcChannel, 0, srcChannel.size());
 
-    	// prepare input file
-    	Reader in = openFile(inFile);
+		srcChannel.close();
+		dstChannel.close();
+	}
 
-      // prepare output file
-      outFile.getParentFile().mkdirs();
-      Writer out = new OutputStreamWriter(new FileOutputStream(outFile), charset);
+	private void compressFile(File inFile, File outFile, FileType fileType) throws EvaluatorException, BuildException {
+		// do not recompress when outFile is newer
+		// always recompress when outFile and inFile are exactly the same file
+		if (outFile.isFile() && !inFile.getAbsolutePath().equals(outFile.getAbsolutePath())) {
+			if (outFile.lastModified() >= inFile.lastModified()) {
+				return;
+			}
+		}
 
-      if (fileType.equals(FileType.JS_FILE)) {
-      	JavaScriptCompressor compressor = createJavaScriptCompressor(in);
-      	compressor.compress(out, lineBreakPosition, munge, warn, preserveAllSemiColons, !optimize);
-      } else if (fileType.equals(FileType.CSS_FILE)) {
-      	CssCompressor compressor = new CssCompressor(in);
-      	compressor.compress(out, lineBreakPosition);
-      }
+		try {
 
-      // close all streams
-      in.close();
-      in = null;
-      out.close();
-      out = null;
+			// prepare input file
+			Reader in = openFile(inFile);
 
-      log(stats.getFileStats(inFile, outFile, fileType));
-    } catch (IOException ioe) {
-      throw new BuildException("I/O Error when compressing file", ioe);
-    }
-  }
+			// prepare output file
+			outFile.getParentFile().mkdirs();
+			Writer out = new OutputStreamWriter(new FileOutputStream(outFile), charset);
 
-  private JavaScriptCompressor createJavaScriptCompressor(Reader in) throws IOException {
-  	JavaScriptCompressor compressor = new JavaScriptCompressor(in, new ErrorReporter() {
+			if (fileType.equals(FileType.JS_FILE)) {
+				JavaScriptCompressor compressor = createJavaScriptCompressor(in);
+				compressor.compress(out, lineBreakPosition, munge, warn, preserveAllSemiColons, !optimize);
+			} else if (fileType.equals(FileType.CSS_FILE)) {
+				CssCompressor compressor = new CssCompressor(in);
+				compressor.compress(out, lineBreakPosition);
+			}
 
-        private String getMessage(String source, String message, int line, int lineOffset) {
-          String logMessage;
-          if (line < 0) {
-            logMessage = (source != null) ? source + ":" : "" + message;
-          } else {
-            logMessage = (source != null) ? source + ":" : "" + line + ":" + lineOffset + ":" + message;
-          }
-          return logMessage;
-        }
+			// close all streams
+			in.close();
+			in = null;
+			out.close();
+			out = null;
 
-        public void warning(String message, String sourceName, int line, String lineSource, int lineOffset) {
-          log(getMessage(sourceName, message, line, lineOffset), Project.MSG_WARN);
-        }
+			log(stats.getFileStats(inFile, outFile, fileType));
+		} catch (IOException ioe) {
+			throw new BuildException("I/O Error when compressing file", ioe);
+		}
+	}
 
-        public void error(String message, String sourceName, int line, String lineSource, int lineOffset) {
-          log(getMessage(sourceName, message, line, lineOffset), Project.MSG_ERR);
+	private JavaScriptCompressor createJavaScriptCompressor(Reader in) throws IOException {
+		JavaScriptCompressor compressor = new JavaScriptCompressor(in, new ErrorReporter() {
 
-        }
+			private String getMessage(String source, String message, int line, int lineOffset) {
+				String logMessage;
+				if (line < 0) {
+					logMessage = (source != null) ? source + ":" : "" + message;
+				} else {
+					logMessage = (source != null) ? source + ":" : "" + line + ":" + lineOffset + ":" + message;
+				}
+				return logMessage;
+			}
 
-        public EvaluatorException runtimeError(String message, String sourceName, int line, String lineSource,
-            int lineOffset) {
-          log(getMessage(sourceName, message, line, lineOffset), Project.MSG_ERR);
-          return new EvaluatorException(message);
-        }
-      });
-  	return compressor;
-  }
+			public void warning(String message, String sourceName, int line, String lineSource, int lineOffset) {
+				log(getMessage(sourceName, message, line, lineOffset), Project.MSG_WARN);
+			}
 
-  private Reader openFile(File file) throws BuildException {
-    Reader in;
-    try {
-      in = new InputStreamReader(new FileInputStream(file), charset);
-    } catch (UnsupportedCharsetException uche) {
-      throw new BuildException("Unsupported charset name: " + charset, uche);
-    } catch (IOException ioe) {
-      throw new BuildException("I/O Error when reading input file", ioe);
-    }
-    return in;
-  }
+			public void error(String message, String sourceName, int line, String lineSource, int lineOffset) {
+				log(getMessage(sourceName, message, line, lineOffset), Project.MSG_ERR);
 
-  private void validateDirs() throws BuildException {
-    if (!fromDir.isDirectory())
-      throw new BuildException(fromDir + " is not a valid directory");
-    if (!toDir.isDirectory())
-      throw new BuildException(toDir + " is not a valid directory");
-  }
+			}
 
-  public void setToDir(File toDir) {
-    this.toDir = toDir;
-  }
+			public EvaluatorException runtimeError(String message, String sourceName, int line, String lineSource, int lineOffset) {
+				log(getMessage(sourceName, message, line, lineOffset), Project.MSG_ERR);
+				return new EvaluatorException(message);
+			}
+		});
+		return compressor;
+	}
 
-  public void setFromDir(File fromDir) {
-    this.fromDir = fromDir;
-  }
+	private Reader openFile(File file) throws BuildException {
+		Reader in;
+		try {
+			in = new InputStreamReader(new FileInputStream(file), charset);
+		} catch (UnsupportedCharsetException uche) {
+			throw new BuildException("Unsupported charset name: " + charset, uche);
+		} catch (IOException ioe) {
+			throw new BuildException("I/O Error when reading input file", ioe);
+		}
+		return in;
+	}
 
-  public void setCharset(String charset) {
-    this.charset = charset;
-  }
+	private void validateDirs() throws BuildException {
+		if (!fromDir.isDirectory())
+			throw new BuildException(fromDir + " is not a valid directory");
+		if (!toDir.isDirectory())
+			throw new BuildException(toDir + " is not a valid directory");
+	}
 
-  public void setLineBreakPosition(int lineBreakPosition) {
-    this.lineBreakPosition = lineBreakPosition;
-  }
+	public void setToDir(File toDir) {
+		this.toDir = toDir;
+	}
 
-  public void setMunge(boolean munge) {
-    this.munge = munge;
-  }
+	public void setFromDir(File fromDir) {
+		this.fromDir = fromDir;
+	}
 
-  public void setWarn(boolean warn) {
-    this.warn = warn;
-  }
+	public void setCharset(String charset) {
+		this.charset = charset;
+	}
 
-  public void setPreserveAllSemiColons(boolean preserveAllSemiColons) {
-    this.preserveAllSemiColons = preserveAllSemiColons;
-  }
+	public void setLineBreakPosition(int lineBreakPosition) {
+		this.lineBreakPosition = lineBreakPosition;
+	}
 
-  public void setOptimize(boolean optimize) {
-  	this.optimize = optimize;
-  }
+	public void setMunge(boolean munge) {
+		this.munge = munge;
+	}
 
-  public void setJsSuffix(String jsSuffix) {
-    this.jsSuffix = jsSuffix;
-  }
+	public void setWarn(boolean warn) {
+		this.warn = warn;
+	}
+
+	public void setPreserveAllSemiColons(boolean preserveAllSemiColons) {
+		this.preserveAllSemiColons = preserveAllSemiColons;
+	}
+
+	public void setOptimize(boolean optimize) {
+		this.optimize = optimize;
+	}
+
+	public void setJsSuffix(String jsSuffix) {
+		this.jsSuffix = jsSuffix;
+	}
 
 	public void setCssSuffix(String cssSuffix) {
 		this.cssSuffix = cssSuffix;
