@@ -3,8 +3,8 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/ant.jar"/>
-	<classpathentry kind="lib" path="vendor/yuicompressor-2.3.5/lib/jargs-1.0.jar"/>
-	<classpathentry kind="lib" path="vendor/yuicompressor-2.3.5/lib/rhino-1.6R7.jar"/>
-	<classpathentry kind="lib" path="vendor/yuicompressor-2.3.5/build/yuicompressor-2.3.5.jar" sourcepath="vendor/yuicompressor-2.3.5/src"/>
+	<classpathentry kind="lib" path="vendor/yuicompressor-2.4.2/build/yuicompressor-2.4.2.jar"/>
+	<classpathentry kind="lib" path="vendor/yuicompressor-2.4.2/lib/jargs-1.0.jar"/>
+	<classpathentry kind="lib" path="vendor/yuicompressor-2.4.2/lib/rhino-1.6R7.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
