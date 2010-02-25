@@ -44,6 +44,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
+import java.nio.channels.FileChannel;
 import java.nio.charset.UnsupportedCharsetException;
 
 
@@ -70,6 +71,7 @@ public class YuiCompressorTask extends MatchingTask {
   protected int lineBreakPosition = -1;
   protected boolean munge = false;
   protected boolean warn = true;
+  private boolean enabled = true;
   protected boolean preserveAllSemiColons = true;
   protected boolean optimize = true;
 
@@ -95,7 +97,16 @@ public class YuiCompressorTask extends MatchingTask {
 
       String newSuffix = (fileType.equals(FileType.JS_FILE)) ? jsSuffix : cssSuffix;
       File outFile = new File(toDir.getAbsolutePath(), files[i].replaceFirst(fileType.getSuffix() + "$", newSuffix));
-      compressFile(inFile, outFile, fileType);
+      if(isEnabled())
+    	  compressFile(inFile, outFile, fileType);
+      else
+      {
+    	  try {
+			copyFile(inFile, outFile);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+      }
     }
 
     log(stats.getJsStats());
@@ -103,6 +114,17 @@ public class YuiCompressorTask extends MatchingTask {
     log(stats.getTotalStats());
   }
 
+  public static void copyFile(File srcFile, File targetFile) throws IOException {
+      targetFile.getParentFile().mkdirs();
+      targetFile.createNewFile(); //if necessary, creates the target file
+      
+      FileChannel srcChannel = new FileInputStream(srcFile).getChannel();
+      FileChannel dstChannel = new FileOutputStream(targetFile).getChannel();
+      dstChannel.transferFrom(srcChannel, 0, srcChannel.size());
+      
+      srcChannel.close();
+      dstChannel.close();
+  }
   private void compressFile(File inFile, File outFile, FileType fileType) throws EvaluatorException, BuildException {
     // do not recompress when outFile is newer
     // always recompress when outFile and inFile are exactly the same file
@@ -229,5 +251,13 @@ public class YuiCompressorTask extends MatchingTask {
 
 	public void setCssSuffix(String cssSuffix) {
 		this.cssSuffix = cssSuffix;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
+
+	public boolean isEnabled() {
+		return enabled;
 	}
 }
