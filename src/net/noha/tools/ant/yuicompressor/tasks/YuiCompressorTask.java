@@ -89,13 +89,13 @@ public class YuiCompressorTask extends MatchingTask {
 
 		for (int i = 0; i < files.length; i++) {
 			File inFile = new File(fromDir.getAbsolutePath(), files[i]);
-			FileType fileType = FileType.getFileType(files[i]);
+			String fileType = FileType.getFileType(files[i]);
 			if (fileType == null) {
 				continue;
 			}
 
 			String newSuffix = (fileType.equals(FileType.JS_FILE)) ? jsSuffix : cssSuffix;
-			File outFile = new File(toDir.getAbsolutePath(), files[i].replaceFirst(fileType.getSuffix() + "$", newSuffix));
+			File outFile = new File(toDir.getAbsolutePath(), files[i].replaceFirst(fileType + "$", newSuffix));
 			if (isEnabled())
 				compressFile(inFile, outFile, fileType);
 			else {
@@ -124,7 +124,7 @@ public class YuiCompressorTask extends MatchingTask {
 		dstChannel.close();
 	}
 
-	private void compressFile(File inFile, File outFile, FileType fileType) throws EvaluatorException, BuildException {
+	private void compressFile(File inFile, File outFile, String fileType) throws EvaluatorException, BuildException {
 		// do not recompress when outFile is newer
 		// always recompress when outFile and inFile are exactly the same file
 		if (outFile.isFile() && !inFile.getAbsolutePath().equals(outFile.getAbsolutePath())) {

@@ -55,7 +55,7 @@ public class CompressionStatistics {
   private long cssToBytes = 0L;
   private long cssFileCount = 0L;
 
-  public String getFileStats(File inFile, File outFile, FileType fileType) {
+  public String getFileStats(File inFile, File outFile, String fileType) {
     // update cummulated statistics
     fromBytes += inFile.length();
     toBytes += outFile.length();

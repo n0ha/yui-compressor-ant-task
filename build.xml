@@ -51,7 +51,7 @@
 	</target>
 
 	<target name="dist" depends="prepare-dist" description="Creates distribution archive">
-		<zip destfile="${yui-compressor-ant-task.zip}" basedir="${build.dir}" level="9">
+		<zip destfile="${yui-compressor-ant-task.zip}" basedir="${build.dir}">
 			<exclude name="classes/**" />
 			<exclude name="src/**" />
 		</zip>
