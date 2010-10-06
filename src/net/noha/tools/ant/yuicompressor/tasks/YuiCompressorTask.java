@@ -73,6 +73,7 @@ public class YuiCompressorTask extends MatchingTask {
 	private boolean enabled = true;
 	protected boolean preserveAllSemiColons = true;
 	protected boolean optimize = true;
+	protected boolean verbose = true;
 
 	// suffixes
 	protected String jsSuffix = "-min.js";
@@ -107,9 +108,11 @@ public class YuiCompressorTask extends MatchingTask {
 			}
 		}
 
-		log(stats.getJsStats());
-		log(stats.getCssStats());
-		log(stats.getTotalStats());
+		if (verbose) {
+			log(stats.getJsStats());
+			log(stats.getCssStats());
+			log(stats.getTotalStats());
+		}
 	}
 
 	public static void copyFile(File srcFile, File targetFile) throws IOException {
@@ -156,7 +159,9 @@ public class YuiCompressorTask extends MatchingTask {
 			out.close();
 			out = null;
 
-			log(stats.getFileStats(inFile, outFile, fileType));
+			if (verbose) {
+				log(stats.getFileStats(inFile, outFile, fileType));
+			}
 		} catch (IOException ioe) {
 			throw new BuildException("I/O Error when compressing file", ioe);
 		}
@@ -257,5 +262,9 @@ public class YuiCompressorTask extends MatchingTask {
 
 	public boolean isEnabled() {
 		return enabled;
+	}
+
+	public void setVerbose(boolean verbose) {
+		this.verbose = verbose;
 	}
 }
