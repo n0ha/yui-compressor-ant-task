@@ -17,7 +17,7 @@
 		<mkdir dir="${dist.dir}" />
 	</target>
 
-	<target name="compile" depends="init" description="Compiles the sources">
+	<target name="compile" depends="init,build-compressor" description="Compiles the sources">
 		<property name="build.debug" value="true" />
 		<property name="build.debuglevel" value="lines,vars,source" />
 		<javac srcdir="${src.dir}" destdir="${build.classes.dir}" target="${build.java.version}" source="${build.java.version}" deprecation="${build.deprecation}" includeAntRuntime="no" debuglevel="${build.debuglevel}" debug="${build.debug}">
@@ -69,5 +69,10 @@
 		<delete dir="${build.output.dir}" />
 		<delete dir="${build.dir}" />
 		<delete dir="${dist.dir}" />
+		<ant dir="${vendor.yuicompressor.dir}" inheritAll="false" target="clean" />
+	</target>
+	
+	<target name="build-compressor" description="Compiles the uunderlying YUI Compressor">
+		<ant dir="${vendor.yuicompressor.dir}" inheritAll="false" />
 	</target>
 </project>
