@@ -6,6 +6,8 @@
 
 	<path id="compile.classpath">
 		<pathelement location="${ant.jar}" />
+		<pathelement location="${guava.jar}" />
+		<pathelement location="${htmlcompressor.jar}" />
 		<pathelement location="${yuicompressor.jar}" />
 	</path>
 

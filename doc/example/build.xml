@@ -2,13 +2,15 @@
 <project name="yui-compressor-ant-task-example" default="dist">
 	<description>Shows off usage of yui-compressor-ant-task.</description>
 
-  <property file="build.properties" />
+	<property file="build.properties" />
 
 	<path id="task.classpath">
+		<pathelement location="${htmlcompressor.jar}" />
+		<pathelement location="${guava.jar}" />
 		<pathelement location="${yuicompressor.jar}" />
 		<pathelement location="${yuicompressor-ant-task.jar}" />
 	</path>
-	
+
 	<target name="banner">
 		<echo message="***************************************" />
 		<echo message="********** Building Example ***********" />
@@ -19,18 +21,18 @@
 		<echo message="***************************************" />
 	</target>
 
-  <target name="check-task-jar-is-present" description="Checks if the required ant task jar exists in the expected dir">
-    <available file="${yuicompressor-ant-task.jar}" property="task.jar.present" />
-  </target>
+	<target name="check-task-jar-is-present" description="Checks if the required ant task jar exists in the expected dir">
+		<available file="${yuicompressor-ant-task.jar}" property="task.jar.present" />
+	</target>
 
-  <target name="define-ant-task" if="task.jar.present">
-    <taskdef name="yui-compressor" classname="net.noha.tools.ant.yuicompressor.tasks.YuiCompressorTask">
-      <classpath refid="task.classpath" />
-	  </taskdef>
-  </target>
+	<target name="define-ant-task" if="task.jar.present">
+		<taskdef name="yui-compressor" classname="net.noha.tools.ant.yuicompressor.tasks.YuiCompressorTask">
+			<classpath refid="task.classpath" />
+		</taskdef>
+	</target>
 
-  <target name="fail-build" unless="task.jar.present">
-    <fail>Cannot find the required ant task jar file.
+	<target name="fail-build" unless="task.jar.present">
+		<fail>Cannot find the required ant task jar file.
     
     Explanation:
     =======================================================================================================
@@ -44,7 +46,7 @@
     in the ${parent.dist.dir} directory.
     =======================================================================================================
     </fail>
-  </target>
+	</target>
 
 	<target name="init" depends="check-task-jar-is-present,define-ant-task,fail-build" description="Initializes directory layout and shows banner">
 		<mkdir dir="${dist.dir}" />
@@ -68,11 +70,12 @@
 			<fileset dir="${src.dir}" includes="some-javascript.js" />
 			<fileset dir="${src.dir}" includes="another-javascript.js" />
 		</concat>
-  </target>
+	</target>
 
 	<target name="copy-and-minify-libs" depends="init" description="Minifies all JS files">
 		<yui-compressor warn="false" munge="true" jsSuffix=".js" cssSuffix=".css" preserveAllSemiColons="false" fromDir="${build.dir}" toDir="${dist.dir}">
 			<include name="*.js" />
+			<include name="*.html" />
 		</yui-compressor>
 	</target>
 
