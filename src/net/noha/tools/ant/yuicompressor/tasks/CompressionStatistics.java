@@ -43,80 +43,145 @@ import java.io.File;
  */
 public class CompressionStatistics {
 
-  private long fromBytes = 0L;
-  private long toBytes = 0L;
-  private long fileCount = 0L;
+    private long fromBytes = 0L;
+    private long toBytes = 0L;
+    private long fileCount = 0L;
 
-  private long jsFromBytes = 0L;
-  private long jsToBytes = 0L;
-  private long jsFileCount = 0L;
+    private long xmlFromBytes = 0L;
+    private long xmlToBytes = 0L;
+    private long xmlFileCount = 0L;
 
-  private long cssFromBytes = 0L;
-  private long cssToBytes = 0L;
-  private long cssFileCount = 0L;
+    private long htmlFromBytes = 0L;
+    private long htmlToBytes = 0L;
+    private long htmlFileCount = 0L;
 
-  public String getFileStats(File inFile, File outFile, String fileType) {
-    // update cummulated statistics
-    fromBytes += inFile.length();
-    toBytes += outFile.length();
-    fileCount++;
+    private long xhtmlFromBytes = 0L;
+    private long xhtmlToBytes = 0L;
+    private long xhtmlFileCount = 0L;
 
-    if (fileType.equals(FileType.JS_FILE)) {
-    	jsFromBytes += inFile.length();
-    	jsToBytes += outFile.length();
-    	jsFileCount++;
-    } else {
-    	cssFromBytes += inFile.length();
-    	cssToBytes += outFile.length();
-    	cssFileCount++;
+    private long jsFromBytes = 0L;
+    private long jsToBytes = 0L;
+    private long jsFileCount = 0L;
+
+    private long cssFromBytes = 0L;
+    private long cssToBytes = 0L;
+    private long cssFileCount = 0L;
+
+    public String getCssStats() {
+        if (cssFileCount == 0) {
+            return "[CSS] No files to compress, or all files already up to date";
+        }
+
+        final int percentage = (int) Math.floor((double) cssToBytes / (double) cssFromBytes * 100);
+        final long fromKBytes = (long) Math.floor((double) cssFromBytes / (double) 1024);
+        final long toKBytes = (long) Math.floor((double) cssToBytes / (double) 1024);
+        final long saved = fromKBytes - toKBytes;
+
+        return "[CSS] Compressed " + cssFileCount + " files to " + percentage + "% (" + fromKBytes + "KB to "
+                + toKBytes + "KB, saving " + saved + "KB)";
     }
 
-    int percentage = (int) Math.floor((double) outFile.length() / (double) inFile.length() * 100);
-    return "[" + percentage + "%] " + inFile.getName() + " [" + inFile.length() + "] ---> " + outFile.getName() + " ["
-        + outFile.length() + "]";
-  }
+    public String getFileStats(final File inFile, final File outFile, final String fileType) {
+        // update cummulated statistics
+        fromBytes += inFile.length();
+        toBytes += outFile.length();
+        fileCount++;
 
-  public String getTotalStats() {
-    if (fileCount == 0) {
-      return "No files to compress, or all files already up to date";
+        if (fileType.equals(FileType.XML_FILE)) {
+            xmlFromBytes += inFile.length();
+            xmlToBytes += outFile.length();
+            xmlFileCount++;
+        } else if (fileType.equals(FileType.HTML_FILE)) {
+            htmlFromBytes += inFile.length();
+            htmlToBytes += outFile.length();
+            htmlFileCount++;
+        } else if (fileType.equals(FileType.XHTML_FILE)) {
+            xhtmlFromBytes += inFile.length();
+            xhtmlToBytes += outFile.length();
+            xhtmlFileCount++;
+        } else if (fileType.equals(FileType.JS_FILE)) {
+            jsFromBytes += inFile.length();
+            jsToBytes += outFile.length();
+            jsFileCount++;
+        } else {
+            cssFromBytes += inFile.length();
+            cssToBytes += outFile.length();
+            cssFileCount++;
+        }
+
+        final int percentage = (int) Math.floor((double) outFile.length() / (double) inFile.length() * 100);
+        return "[" + percentage + "%] " + inFile.getName() + " [" + inFile.length() + "] ---> " + outFile.getName()
+                + " [" + outFile.length() + "]";
     }
 
-    int percentage = (int) Math.floor((double) toBytes / (double) fromBytes * 100);
-    long fromKBytes = (long) Math.floor((double) fromBytes / (double) 1024);
-    long toKBytes = (long) Math.floor((double) toBytes / (double) 1024);
-    long saved = fromKBytes - toKBytes;
+    public String getHtmlStats() {
+        if (htmlFileCount == 0) {
+            return "[HTML] No files to compress, or all files already up to date";
+        }
 
-    return "Compressed " + fileCount + " files to " + percentage + "% (" + fromKBytes + "KB to " + toKBytes
-        + "KB, saving " + saved + "KB)";
-  }
+        final int percentage = (int) Math.floor((double) htmlToBytes / (double) htmlFromBytes * 100);
+        final long fromKBytes = (long) Math.floor((double) htmlFromBytes / (double) 1024);
+        final long toKBytes = (long) Math.floor((double) htmlToBytes / (double) 1024);
+        final long saved = fromKBytes - toKBytes;
 
-  public String getJsStats() {
-  	if (jsFileCount == 0) {
-      return "[JavaScript] No files to compress, or all files already up to date";
+        return "[HTML] Compressed " + htmlFileCount + " files to " + percentage + "% (" + fromKBytes + "KB to "
+                + toKBytes + "KB, saving " + saved + "KB)";
     }
 
-    int percentage = (int) Math.floor((double) jsToBytes / (double) jsFromBytes * 100);
-    long fromKBytes = (long) Math.floor((double) jsFromBytes / (double) 1024);
-    long toKBytes = (long) Math.floor((double) jsToBytes / (double) 1024);
-    long saved = fromKBytes - toKBytes;
+    public String getJsStats() {
+        if (jsFileCount == 0) {
+            return "[JavaScript] No files to compress, or all files already up to date";
+        }
 
-    return "[JavaScript] Compressed " + jsFileCount + " files to " + percentage + "% (" + fromKBytes + "KB to " + toKBytes
-        + "KB, saving " + saved + "KB)";
-  }
+        final int percentage = (int) Math.floor((double) jsToBytes / (double) jsFromBytes * 100);
+        final long fromKBytes = (long) Math.floor((double) jsFromBytes / (double) 1024);
+        final long toKBytes = (long) Math.floor((double) jsToBytes / (double) 1024);
+        final long saved = fromKBytes - toKBytes;
 
-  public String getCssStats() {
-  	if (cssFileCount == 0) {
-      return "[CSS] No files to compress, or all files already up to date";
+        return "[JavaScript] Compressed " + jsFileCount + " files to " + percentage + "% (" + fromKBytes + "KB to "
+                + toKBytes + "KB, saving " + saved + "KB)";
     }
 
-    int percentage = (int) Math.floor((double) cssToBytes / (double) cssFromBytes * 100);
-    long fromKBytes = (long) Math.floor((double) cssFromBytes / (double) 1024);
-    long toKBytes = (long) Math.floor((double) cssToBytes / (double) 1024);
-    long saved = fromKBytes - toKBytes;
+    public String getTotalStats() {
+        if (fileCount == 0) {
+            return "No files to compress, or all files already up to date";
+        }
 
-    return "[CSS] Compressed " + cssFileCount + " files to " + percentage + "% (" + fromKBytes + "KB to " + toKBytes
-        + "KB, saving " + saved + "KB)";
-  }
+        final int percentage = (int) Math.floor((double) toBytes / (double) fromBytes * 100);
+        final long fromKBytes = (long) Math.floor((double) fromBytes / (double) 1024);
+        final long toKBytes = (long) Math.floor((double) toBytes / (double) 1024);
+        final long saved = fromKBytes - toKBytes;
 
+        return "Compressed " + fileCount + " files to " + percentage + "% (" + fromKBytes + "KB to " + toKBytes
+                + "KB, saving " + saved + "KB)";
+    }
+
+    public String getXhtmlStats() {
+        if (xhtmlFileCount == 0) {
+            return "[XHTML] No files to compress, or all files already up to date";
+        }
+
+        final int percentage = (int) Math.floor((double) xhtmlToBytes / (double) xhtmlFromBytes * 100);
+        final long fromKBytes = (long) Math.floor((double) xhtmlFromBytes / (double) 1024);
+        final long toKBytes = (long) Math.floor((double) xhtmlToBytes / (double) 1024);
+        final long saved = fromKBytes - toKBytes;
+
+        return "[XHTML] Compressed " + xhtmlFileCount + " files to " + percentage + "% (" + fromKBytes + "KB to "
+                + toKBytes + "KB, saving " + saved + "KB)";
+    }
+
+    public String getXmlStats() {
+        if (xmlFileCount == 0) {
+            return "[XML] No files to compress, or all files already up to date";
+        }
+
+        final int percentage = (int) Math.floor((double) xmlToBytes / (double) xmlFromBytes * 100);
+        final long fromKBytes = (long) Math.floor((double) xmlFromBytes / (double) 1024);
+        final long toKBytes = (long) Math.floor((double) xmlToBytes / (double) 1024);
+        final long saved = fromKBytes - toKBytes;
+
+        return "[XML] Compressed " + xmlFileCount + " files to " + percentage + "% (" + fromKBytes + "KB to "
+                + toKBytes + "KB, saving " + saved + "KB)";
+    }
 
 }

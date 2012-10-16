@@ -2,9 +2,11 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="vendor/yuicompressor-2.4.7/lib/jargs-1.0.jar"/>
+	<classpathentry kind="lib" path="vendor/yuicompressor-2.4.7/lib/rhino-1.6R7.jar"/>
+	<classpathentry kind="lib" path="vendor/yuicompressor-2.4.7/build/yuicompressor-2.4.7.jar"/>
+	<classpathentry kind="lib" path="lib/guava-13.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/htmlcompressor-1.5.3.jar"/>
 	<classpathentry kind="lib" path="lib/ant.jar"/>
-	<classpathentry kind="lib" path="vendor/yuicompressor-2.4.2/build/yuicompressor-2.4.2.jar"/>
-	<classpathentry kind="lib" path="vendor/yuicompressor-2.4.2/lib/jargs-1.0.jar"/>
-	<classpathentry kind="lib" path="vendor/yuicompressor-2.4.2/lib/rhino-1.6R7.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
