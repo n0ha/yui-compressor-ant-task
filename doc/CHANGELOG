@@ -1,3 +1,7 @@
+September 8, 2013: version 0.6.1
+- updated google guava to latest 15.0
+- updated ant to latest 1.9.2
+
 September 29, 2012: version 0.6.0
 - added htmlcompressor 1.5.3
 - updated ant to latest 1.8.4
