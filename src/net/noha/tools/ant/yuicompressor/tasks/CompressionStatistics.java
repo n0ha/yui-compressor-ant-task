@@ -82,7 +82,7 @@ public class CompressionStatistics {
     }
 
     public String getFileStats(final File inFile, final File outFile, final String fileType) {
-        // update cummulated statistics
+        // update accumulated statistics
         fromBytes += inFile.length();
         toBytes += outFile.length();
         fileCount++;
