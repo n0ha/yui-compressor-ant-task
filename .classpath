@@ -6,7 +6,7 @@
 	<classpathentry kind="lib" path="vendor/yuicompressor-2.4.7/lib/rhino-1.6R7.jar"/>
 	<classpathentry kind="lib" path="vendor/yuicompressor-2.4.7/build/yuicompressor-2.4.7.jar"/>
 	<classpathentry kind="lib" path="lib/htmlcompressor-1.5.3.jar"/>
-	<classpathentry kind="lib" path="lib/guava-15.0.jar"/>
-	<classpathentry kind="lib" path="lib/ant-1.9.2.jar"/>
+	<classpathentry kind="lib" path="lib/guava-18.0.jar"/>
+	<classpathentry kind="lib" path="lib/ant-1.9.4.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
