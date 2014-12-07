@@ -1,6 +1,10 @@
+December 6, 2014: version 0.7.0
+- migrated build system from ant to maven
+
 December 6, 2014: version 0.6.2
 - updated google guava to latest 18.0
 - updated ant to latest 1.9.4
+- fixed potential resource leak
 
 September 8, 2013: version 0.6.1
 - updated google guava to latest 15.0
