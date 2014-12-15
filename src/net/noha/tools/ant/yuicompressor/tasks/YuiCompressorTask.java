@@ -148,14 +148,19 @@ public class YuiCompressorTask extends MatchingTask {
 
     private void copyFile(final File srcFile, final File targetFile) throws IOException {
         targetFile.getParentFile().mkdirs();
-        targetFile.createNewFile(); // if necessary, creates the target file
+        // if necessary, creates the target file
+        targetFile.createNewFile();
 
-        final FileChannel srcChannel = new FileInputStream(srcFile).getChannel();
-        final FileChannel dstChannel = new FileOutputStream(targetFile).getChannel();
-        dstChannel.transferFrom(srcChannel, 0, srcChannel.size());
-
-        srcChannel.close();
-        dstChannel.close();
+        FileChannel srcChannel = null;
+        FileChannel dstChannel = null;
+        try {
+            srcChannel = new FileInputStream(srcFile).getChannel();
+            dstChannel = new FileOutputStream(targetFile).getChannel();
+            dstChannel.transferFrom(srcChannel, 0, srcChannel.size());
+        } finally {
+            srcChannel.close();
+            dstChannel.close();
+        }
     }
 
     private JavaScriptCompressor createJavaScriptCompressor(final Reader in) throws IOException {
