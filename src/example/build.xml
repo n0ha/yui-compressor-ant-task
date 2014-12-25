@@ -37,14 +37,17 @@
 
     Explanation:
     =======================================================================================================
-    Cannot find yui-compressor-ant-task-${build.version}.jar file in ${parent.dist.dir}.
-    This is probably because you did not ran the ant task build. You can run the build with these commands:
+    Cannot find yui-compressor-ant-task-${build.version}.jar file.  This is likely due to either not using
+    a pre-built bundle or attempting to run the build from the source directory.  If building yourself,
+    please run the maven build and then run the example from within this location
+        ${maven.dist.dir}/doc/example.
 
-    # cd ../../
-    # ant
+    You can run the build with these commands:
 
-    Alternatively, you can download a prebuilt jar from http://code.google.com/p/javaflight-code/ and put it
-    in the ${parent.dist.dir} directory.
+    # mvn clean install
+
+    Alternatively, you can download a prebuilt jar from
+        https://github.com/n0ha/yui-compressor-ant-task/releases.
     =======================================================================================================
     </fail>
     </target>
