@@ -87,7 +87,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <ant.version>1.9.9</ant.version>
-        <guava.version>18.0</guava.version>
+        <guava.version>20.0</guava.version>
         <htmlcompressor.version>1.5.2</htmlcompressor.version>
         <yuicompressor.version>2.4.8</yuicompressor.version>
 
