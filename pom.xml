@@ -88,7 +88,7 @@
 
         <ant.version>1.9.9</ant.version>
         <guava.version>20.0</guava.version>
-        <htmlcompressor.version>1.5.2</htmlcompressor.version>
+        <htmlcompressor.version>1.6.2</htmlcompressor.version>
         <yuicompressor.version>2.4.8</yuicompressor.version>
 
         <signature.artifact>java16</signature.artifact>
@@ -107,7 +107,7 @@
             <version>${guava.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.googlecode.htmlcompressor</groupId>
+            <groupId>com.github.hazendaz</groupId>
             <artifactId>htmlcompressor</artifactId>
             <version>${htmlcompressor.version}</version>
         </dependency>
