@@ -18,7 +18,7 @@
             <outputDirectory>lib</outputDirectory>
             <includes>
                 <include>com.google.guava:guava</include>
-                <include>com.googlecode.htmlcompressor:htmlcompressor</include>
+                <include>com.github.hazendaz:htmlcompressor</include>
                 <include>com.yahoo.platform.yui:yuicompressor</include>
                 <include>org.apache.ant:ant</include>
                 <include>rhino:js</include>
