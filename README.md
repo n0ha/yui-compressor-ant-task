@@ -5,5 +5,3 @@ YUICompressor Ant Task
 [![Yui License](http://img.shields.io/badge/license-YUI%202-blue.svg)](https://github.com/yui/yuicompressor/blob/master/LICENSE.TXT)
 
 Yahoo UI's great Rhino based compressor packaged as an Ant task.
-
-Short introduction with examples: http://javaflight.blogspot.com/2008/01/introducing-yui-compressor-ant-task.html
