@@ -78,8 +78,8 @@
     <properties>
         <finalName>yui-compressor-ant-task-${project.version}</finalName>
         <github.global.server>github</github.global.server>
-        <maven.compiler.source>1.9</maven.compiler.source>
-        <maven.compiler.target>1.9</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
         <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
         <maven.min-version>3.0.5</maven.min-version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -87,7 +87,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <ant.version>1.9.16</ant.version>
-        <guava.version>32.0.1-android</guava.version>
+        <guava.version>32.0.1-jre</guava.version>
         <htmlcompressor.version>1.7.3</htmlcompressor.version>
         <yuicompressor.version>2.4.8</yuicompressor.version>
 
